@@ -14,6 +14,7 @@ import com.dtback.dt_back.repository.WarehouseRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +29,19 @@ public class UserService {
     private final CompanyRepository companyRepository;
     private final WarehouseRepository warehouseRepository;
     private final HttpSession httpSession;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        CompanyRepository companyRepository,
                        WarehouseRepository warehouseRepository,
-                       HttpSession httpSession) {
+                       HttpSession httpSession,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.warehouseRepository = warehouseRepository;
         this.httpSession = httpSession;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ApiResponse<User> signup(SignupRequestDto signupRequestDto) {
@@ -77,7 +81,7 @@ public class UserService {
 
         User newUser = new User();
         newUser.setEmail(signupRequestDto.getEmail());
-        newUser.setPassword(signupRequestDto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
         newUser.setUserName(signupRequestDto.getUserName());
         newUser.setPhoneNumber(signupRequestDto.getPhoneNumber());
         newUser.setWarehouseId(warehouse.getWarehouseId());
@@ -91,7 +95,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByEmail(loginRequestDto.getEmail());
         User user = userOptional.orElseThrow(() -> new IllegalArgumentException("Invalid email"));
 
-        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid password");
         }
 
@@ -141,12 +145,12 @@ public class UserService {
             throw new IllegalStateException("User not logged in");
         }
 
-        if (!currentUser.getPassword().equals(updateDto.getCurrentPassword())) {
+        if (!passwordEncoder.matches(updateDto.getCurrentPassword(), currentUser.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
 
         if (updateDto.getNewPassword() != null && !updateDto.getNewPassword().isEmpty()) {
-            currentUser.setPassword(updateDto.getNewPassword());
+            currentUser.setPassword(passwordEncoder.encode(updateDto.getNewPassword()));
         }
 
         if (updateDto.getUserName() != null && !updateDto.getUserName().isEmpty()) {

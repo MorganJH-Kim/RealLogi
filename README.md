@@ -47,12 +47,12 @@ RealLogi는 물류센터 관리자를 위한 AGV(Automated Guided Vehicle) 관�
 
 ### 웹 파트 FE, BE 개발
 
-- 김지홍
+- **김지홍**
 - 남정호
 
 ### 인프라 구축
 
-- 김지홍
+- **김지홍**
 
 ## 기술 스택
 
@@ -172,12 +172,12 @@ python app.py
 ## 설계 문서
 
 - 와이어프레임: https://www.figma.com/design/wJGdf2lM9Qdg1LK5ax7zxv/Untitled?node-id=0-1\&t=6lcB7t8WEBTDRzIw-1
-- ERD: https://www.erdcloud.com/p/tikF6ZtWviX9RifWH
+- ERD: ![common_project_erd.png](common_project_erd.png)
 - API 문서: https://www.notion.so/RealLogi-API-1a059e7b696980da92f3cfb3a0b20ae7?pvs=4
 
 # 아키텍쳐
 
-![project101__2_](/uploads/888d4aefd3432ff059ad561e4be2dd5e/project101__2_.png)
+![project101__2_](project101.png)
 
 ## 배포 및 테스트
 
